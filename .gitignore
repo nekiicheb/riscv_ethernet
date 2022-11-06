@@ -1,3 +1,6 @@
+softconsole_wb/mpfs-mmuart-interrupt/
+softconsole_wb/.metadata/
+
 apps-master/
 eclipse-workspace/
 freedom-e-sdk-master/
@@ -13,8 +16,7 @@ riscv64-unknown-elf-toolchain-10.2.0-2020.12.8-x86_64-linux-ubuntu14/
 riscv_toolchain/
 sftcnsle_scripts/
 SoftConsole-v2022.2-RISC-V-747/
-softconsole_wb/
 u-boot/
 ubuntu_qemu/
 wireshark-master/
-src/
+install/
