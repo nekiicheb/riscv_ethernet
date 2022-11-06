@@ -12,6 +12,7 @@
 #ifndef MSS_ETHERNET_MAC_TYPES_H_
 #define MSS_ETHERNET_MAC_TYPES_H_
 #include <stdint.h>
+#include "mpfs_hal/common/mss_plic.h"
 
 #if defined(MSS_MAC_PHY_HW_RESET) || defined(MSS_MAC_PHY_HW_SRESET)
 #include "drivers/mss_gpio/mss_gpio.h"
