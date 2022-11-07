@@ -3,6 +3,7 @@
 */
 #include "project_cfg.h"
 #include "./net/net.h"
+#include "./net_utils/checksum.h"
 #include "mpfs_hal/mss_hal.h"
 #include "mpfs_hal/common/nwc/mss_nwc_init.h"
 #include "drivers/mss/mss_gpio/mss_gpio.h"
@@ -70,7 +71,15 @@ void e51(void) {
     {
       // received rx ethernet packet
       //isIpPkt();
-      //isCrcFromIpCorrect();
+      bool is_valid_crc = check_ip_crc(uint8_t* buf, size_t len);
+      if(is_valid_crc)
+      {
+        int32_t eth_send_pkt(uint8_t* buf, size_t length);
+      }
+      else
+      {
+        PRINT_STRING("Incorrect IP Crc Checksum\n\r");
+      }
       //PRINT_STRING("Incorrect IP Crc Checksum\n\r");
       //transmitEthPkt();
       //int32_t tx_status = MSS_MAC_send_pkt(g_test_mac, 0, tx_pak_arp,
