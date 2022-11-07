@@ -67,7 +67,7 @@ static uint32_t sum(uint16_t *data, int size, uint32_t origsum)
 		size -= 2;
 	}
 	if (size)
-		origsum += ntohs(((*(uint8_t *)data) & 0xff) << 8);
+		origsum += (((*(uint8_t *)data) & 0xff) << 8);//ntohs(((*(uint8_t *)data) & 0xff) << 8);
 	return origsum;
 }
 

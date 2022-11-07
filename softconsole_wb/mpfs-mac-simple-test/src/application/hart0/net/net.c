@@ -25,13 +25,7 @@ enum BufferState
 
 volatile enum BufferState buffer_state = FREE;
 
-#define PACKET_MAX   16384U
-volatile struct eth_pkt
-{
-  size_t length;
-  uint8_t data[PACKET_MAX];
-} eth_pkt;
-struct eth_pkt packet_data;
+volatile struct eth_pkt rx_packet;
 
 static mss_mac_instance_t *g_test_mac = &g_mac1;
 static mss_mac_cfg_t g_mac_config;
@@ -84,8 +78,8 @@ static void mac_rx_callback(
   }
   else
   {
-    packet_data.length = pckt_length;
-    memcpy(&packet_data.data[0], p_rx_packet, pckt_length);
+    rx_packet.length = pckt_length;
+    memcpy(&rx_packet.data[0], p_rx_packet, pckt_length);
     buffer_state = BUSY;
     is_available_rx_pkt = true;
   }
@@ -205,9 +199,12 @@ void eth_low_level_init(void)
   }
 }
 
-int32_t eth_send_pkt(uint8_t* buf, size_t length)
+int32_t eth_send_pkt(const uint8_t* buf, size_t length)
 {
   return MSS_MAC_send_pkt(g_test_mac, 0, buf, (uint32_t)length, (void*) 0);
 }
 
-
+struct eth_pkt* get_rx_pkt(void)
+{
+  return &rx_packet;
+}

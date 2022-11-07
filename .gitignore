@@ -17,7 +17,6 @@ qemu_7/
 qemu-master/
 riscv64-unknown-elf-toolchain-10.2.0-2020.12.8-x86_64-linux-ubuntu14/
 riscv_toolchain/
-sftcnsle_scripts/
 SoftConsole-v2022.2-RISC-V-747/
 u-boot/
 ubuntu_qemu/

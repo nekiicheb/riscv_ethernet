@@ -16,6 +16,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+
 #define PRINT_STRING(x) MSS_UART_polled_tx_string(&g_mss_uart0_lo, (uint8_t *)x);
 
 extern void init_memory(void);
@@ -70,21 +71,18 @@ void e51(void) {
     if(is_available_rx_pkt)
     {
       // received rx ethernet packet
-      //isIpPkt();
-      bool is_valid_crc = check_ip_crc(uint8_t* buf, size_t len);
+      struct eth_pkt* pkt = get_rx_pkt();
+      bool is_valid_crc = check_ip_crc(&pkt->data[0], pkt->length);
       if(is_valid_crc)
       {
-        int32_t eth_send_pkt(uint8_t* buf, size_t length);
+        PRINT_STRING("Correct IP Crc Checksum\r\n");
       }
       else
       {
-        PRINT_STRING("Incorrect IP Crc Checksum\n\r");
+        PRINT_STRING("Incorrect IP Crc Checksum\r\n");
       }
-      //PRINT_STRING("Incorrect IP Crc Checksum\n\r");
-      //transmitEthPkt();
-      //int32_t tx_status = MSS_MAC_send_pkt(g_test_mac, 0, tx_pak_arp,
-      //           sizeof(tx_pak_arp), (void*) 0);
-      //sprintf(info_string, "TX status %d\n\r", (int) tx_status);
+      eth_send_pkt(&pkt->data[0], pkt->length);
+      is_available_rx_pkt = false;
     }
   }
 }
