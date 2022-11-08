@@ -3,7 +3,7 @@
 */
 #include "project_cfg.h"
 #include "./net/net.h"
-#include "./net_utils/checksum.h"
+#include "./net_utils/proprietary_pkt_util.h"
 #include "mpfs_hal/mss_hal.h"
 #include "mpfs_hal/common/nwc/mss_nwc_init.h"
 #include "drivers/mss/mss_gpio/mss_gpio.h"
@@ -66,13 +66,16 @@ void e51(void) {
   PRINT_STRING("UART works\n\r");
   __enable_irq();
   eth_low_level_init();
+  #ifdef CHECKSUM_TEST
+  test_checksum();
+  #endif
   while (1)
   {
     if(is_available_rx_pkt)
     {
       // received rx ethernet packet
       struct eth_pkt* pkt = get_rx_pkt();
-      bool is_valid_crc = check_ip_crc(&pkt->data[0], pkt->length);
+      bool is_valid_crc = check_proprietary_crc(&pkt->data[0], pkt->length);
       if(is_valid_crc)
       {
         PRINT_STRING("Correct IP Crc Checksum\r\n");

@@ -1,4 +1,4 @@
-#include "./net_utils/checksum.h"
+#include "./net_utils/proprietary_pkt_util.h"
 #include <arpa/inet.h>
 #include <linux/if_packet.h>
 #include <stdio.h>
@@ -24,6 +24,8 @@
 #define DST_ADDR  "127.0.0.1"
 #define SRC_PORT  "7777"
 #define DST_PORT  "8888"
+#define CRC32_SIZE 4
+#define L2_SIZE 14
 
 int main(int argc, char *argv[])
 {
@@ -74,7 +76,7 @@ int main(int argc, char *argv[])
 	eh->ether_dhost[5] = MY_DEST_MAC5;
 	/* Ethertype field */
 	eh->ether_type = htons(ETH_P_IP);
-	tx_len += sizeof(struct ether_header) + sizeof(struct iphdr) + sizeof(struct udphdr);
+	tx_len += sizeof(struct ether_header) + sizeof(struct iphdr) + sizeof(struct udphdr) + CRC32_SIZE;
 
 	/* fabricate the IP header */
 	iph->ihl      = 5;
@@ -87,7 +89,7 @@ int main(int argc, char *argv[])
 	iph->check = 0;
 	iph->saddr = inet_addr(SRC_ADDR);
 	iph->daddr = inet_addr(DST_ADDR);
-	iph->check = get_ip_chksum((uint8_t *)iph, sizeof(struct iphdr));
+	iph->check = 0;
 	// fabricate the UDP header
 	udp->source = htons(atoi(SRC_PORT));
 	// destination port number
@@ -105,13 +107,14 @@ int main(int argc, char *argv[])
 	socket_address.sll_addr[3] = MY_DEST_MAC3;
 	socket_address.sll_addr[4] = MY_DEST_MAC4;
 	socket_address.sll_addr[5] = MY_DEST_MAC5;
+	*(uint32_t*)(sendbuf + tx_len - CRC32_SIZE) = htonl(get_prop_pkt_crc((uint8_t*)iph, tx_len - L2_SIZE - CRC32_SIZE));
 
 	/* Send correct pkt */
 	if (sendto(sockfd, sendbuf, tx_len, 0, (struct sockaddr*)&socket_address, sizeof(struct sockaddr_ll)) < 0)
 	    printf("Send correct pkt failed\n");
 
 	/* Send incorrect pkt */
-	iph->check = 0;
+	*(uint32_t*)(sendbuf + tx_len - CRC32_SIZE) = htonl(1);
 	if (sendto(sockfd, sendbuf, tx_len, 0, (struct sockaddr*)&socket_address, sizeof(struct sockaddr_ll)) < 0)
 	    printf("Send incorrect pkt failed\n");
 	return 0;

@@ -1,6 +1,6 @@
 #include "./netinet_in.h"
-#include "./checksum.h"
-#include "./checksum.h"
+#include "./proprietary_pkt_util.h"
+
 
 #include <stdio.h>
 #include <metal/cpu.h>

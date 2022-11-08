@@ -1,4 +1,4 @@
-#include "project_cfg.h"
+#include "./project_cfg.h"
 #include "netinet_in.h"
 
 #if IS_LITTLE_ENDIAN
