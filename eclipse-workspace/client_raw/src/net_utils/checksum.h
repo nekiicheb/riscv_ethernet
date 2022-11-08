@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 bool check_ip_crc(uint8_t* buf, size_t len);
-uint16_t ip_chksum(uint8_t *data, int size);
+uint16_t get_ip_chksum(uint8_t *data, int size);
 #ifdef CHECKSUM_TEST
 void test_checksum();
 #endif

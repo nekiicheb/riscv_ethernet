@@ -1,0 +1,4 @@
+src/init.o: \
+ /mnt/sata_data/qemu/freedom_wb/qemu_sifive_e31_sifive_welcome/freedom-metal/src/init.c \
+ /mnt/sata_data/qemu/freedom_wb/qemu_sifive_e31_sifive_welcome/freedom-metal/metal/init.h
+/mnt/sata_data/qemu/freedom_wb/qemu_sifive_e31_sifive_welcome/freedom-metal/metal/init.h:

@@ -9,7 +9,6 @@ test task from company
       - убедиться в нормальной работе цепочки дескрипторов при переполнении 
       - убедиться в отсутствии исключения при доступе к невыровненным адресам (для CortexA9 + MPU актуально)
       - добавить в проект тестирования под Linux приём пакетов и чтение из консоли
-    - реализовать скрипты htonl и т д
 2) структура проекта:
   2.1) проект решение задания для платформы polarfire для SOFTCONSOLE IDE
 	./softconsole_wb/mpfs-mac-simple-test/
@@ -22,4 +21,6 @@ test task from company
   2.3) скрипт для запуска QEMU (не работает)
     2.3.1) ./sftcnsle_scripts/qemu_run.sh
     2.3.2) проброс портов в QEMU машину, dump трафика для wireshark
+  2.4) проект для эмуляции кода в QEMU для FreedomStudio IDE
+    2.4.1) ./freedom_wb/qemu_sifive_e31_sifive_welcome/src/
 

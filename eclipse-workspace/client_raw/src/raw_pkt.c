@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 	iph->check = 0;
 	iph->saddr = inet_addr(SRC_ADDR);
 	iph->daddr = inet_addr(DST_ADDR);
-	iph->check = ip_chksum((uint8_t *)iph, sizeof(struct iphdr));
+	iph->check = get_ip_chksum((uint8_t *)iph, sizeof(struct iphdr));
 	// fabricate the UDP header
 	udp->source = htons(atoi(SRC_PORT));
 	// destination port number

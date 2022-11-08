@@ -1,0 +1,2 @@
+src/entry.o: \
+ /mnt/sata_data/qemu/freedom_wb/qemu_sifive_e31_sifive_welcome/freedom-metal/src/entry.S

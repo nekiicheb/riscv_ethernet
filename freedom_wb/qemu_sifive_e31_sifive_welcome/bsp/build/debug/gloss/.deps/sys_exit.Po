@@ -1,0 +1,4 @@
+gloss/sys_exit.o: \
+ /mnt/sata_data/qemu/freedom_wb/qemu_sifive_e31_sifive_welcome/freedom-metal/gloss/sys_exit.c \
+ /mnt/sata_data/qemu/freedom_wb/qemu_sifive_e31_sifive_welcome/freedom-metal/metal/shutdown.h
+/mnt/sata_data/qemu/freedom_wb/qemu_sifive_e31_sifive_welcome/freedom-metal/metal/shutdown.h:

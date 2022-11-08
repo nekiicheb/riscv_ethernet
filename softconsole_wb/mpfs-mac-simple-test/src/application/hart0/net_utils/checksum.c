@@ -1,4 +1,5 @@
 #include "checksum.h"
+#include "netinet_in.h"
 #include <assert.h>
 #include <string.h>
 
@@ -34,31 +35,6 @@ const uint8_t incorrect_ping_packet[98] =
 #define IP_CRC_MSB_OFFSET 10
 #define IP_CRC_LSB_OFFSET 11
 
-static uint16_t get_ip_crc(uint16_t *buf, int len)
-{
-	uint32_t sum = 0;
-	while(len >1)
-	{
-		sum += 0xFFFF & (*buf<<8|*(buf+1));
-		buf+=2;
-		len-=2;
-	}
-	// if there is a byte left then add it (padded with zero)
-	if (len)
-	{
-		//--- made by SKA ---                sum += (0xFF & *buf)<<8;
-		sum += 0xFFFF & (*buf<<8|0x00);
-	}
-	// now calculate the sum over the bytes in the sum
-	// until the result is only 16bit long
-	while (sum>>16)
-	{
-		sum = (sum & 0xFFFF)+(sum >> 16);
-	}
-	// build 1's complement:
-	return( (uint16_t) sum ^ 0xFFFF);
-}
-
 static uint32_t sum(uint16_t *data, int size, uint32_t origsum)
 {
 	while (size > 1)
@@ -67,7 +43,7 @@ static uint32_t sum(uint16_t *data, int size, uint32_t origsum)
 		size -= 2;
 	}
 	if (size)
-		origsum += (((*(uint8_t *)data) & 0xff) << 8);//ntohs(((*(uint8_t *)data) & 0xff) << 8);
+		origsum += ntohs(((*(uint8_t *)data) & 0xff) << 8);
 	return origsum;
 }
 
@@ -79,7 +55,7 @@ static uint16_t checksum(uint16_t *data, int size, uint16_t origsum)
 	return (~origsum & 0xffff);
 }
 
-static uint16_t ip_chksum(uint8_t *data, int size)
+uint16_t get_ip_chksum(uint8_t *data, int size)
 {
 	return checksum(data, size, 0);
 }
@@ -94,7 +70,7 @@ bool check_ip_crc(uint8_t* buf, size_t len)
 		return false;
 	}
 	ptr = ptr + 12;
-	uint16_t eth_type = (*ptr << 8) | (*(ptr + 1));
+	uint16_t eth_type = ntohs(*((uint16_t*)ptr));
 	if(eth_type != IP4TYPE)
 	{
 		// в тз не расписан этот вариант, отбросим пакет
@@ -102,20 +78,17 @@ bool check_ip_crc(uint8_t* buf, size_t len)
 	}
 	ptr = ptr + 2;
   #endif
-	uint16_t crc_from_packet = (*(ptr + 10) << 8 ) | (*(ptr + 11));
-	*(ptr + IP_CRC_MSB_OFFSET) = 0;
-	*(ptr + IP_CRC_LSB_OFFSET) = 0;
-	uint16_t calc_crc = ip_chksum(ptr, IP_HEADER_SIZE);
-	calc_crc = (calc_crc << 8) | (calc_crc >> 8);
-	*(ptr + IP_CRC_MSB_OFFSET) = crc_from_packet >> 8;
-	*(ptr + IP_CRC_LSB_OFFSET) = crc_from_packet;
+	uint16_t crc_from_packet = ntohs(*((uint16_t*)(ptr + IP_CRC_MSB_OFFSET)));
+	(*((uint16_t*)(ptr + IP_CRC_MSB_OFFSET))) = 0;
+	uint16_t calc_crc = ntohs(get_ip_chksum(ptr, IP_HEADER_SIZE));
+	(*((uint16_t*)(ptr + IP_CRC_MSB_OFFSET))) = htons(crc_from_packet);
 	return (calc_crc == crc_from_packet);
 }
 
 #ifdef CHECKSUM_TEST
+uint8_t pkt[(sizeof(correct_ping_packet))];
 void test_checksum()
 {
-  uint8_t pkt[(sizeof(correct_ping_packet))];
   // test with correct pkt
   memcpy(&pkt[0], &correct_ping_packet[0], sizeof(pkt));
   assert(check_ip_crc(&pkt[0], sizeof(pkt)) == true);
@@ -123,6 +96,7 @@ void test_checksum()
   if(memcmp(&pkt[0], &correct_ping_packet[0], sizeof(correct_ping_packet)) != 0)
   {
     assert("src packet spoiled");
+    return;
   }
   // test with correct pkt
   memcpy(&pkt[0], &incorrect_ping_packet[0], sizeof(pkt));

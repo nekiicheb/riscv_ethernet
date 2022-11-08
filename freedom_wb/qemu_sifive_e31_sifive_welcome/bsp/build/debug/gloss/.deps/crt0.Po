@@ -1,0 +1,2 @@
+gloss/crt0.o: \
+ /mnt/sata_data/qemu/freedom_wb/qemu_sifive_e31_sifive_welcome/freedom-metal/gloss/crt0.S

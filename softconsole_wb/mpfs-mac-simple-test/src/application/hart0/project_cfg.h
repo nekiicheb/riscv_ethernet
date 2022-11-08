@@ -3,4 +3,10 @@
 
 #define CHECKSUM_TEST
 
+//#define IS_BIG_ENDIAN 1
+#if (IS_BIG_ENDIAN)
+#else
+  #define IS_LITTLE_ENDIAN 1
+#endif
+
 #endif /* APPLICATION_HART0_PROJECT_CFG_H_ */
