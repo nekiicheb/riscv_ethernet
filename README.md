@@ -2,7 +2,7 @@
 test task from company
 
 ## Задание
-![Task](./tcompany_task.png)
+![Task](./company_task.png)
 
 ## todo list:
     - уточнить какой полином в crc32. Сейчас в коде проверяется контрольная сумма IPv4 Header, а нужно crc всей посылки
